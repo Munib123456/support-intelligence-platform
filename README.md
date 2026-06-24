@@ -12,6 +12,7 @@ Large organisations receive thousands of support tickets a month. Managers canno
 
 ## What it does
 
+- **Predicts categories live** — type any complaint into the app and the NLP classifier predicts its category in real time; uploaded CSVs without a category column are auto-categorised from their text.
 - **Categorises** support issues using a Natural Language Processing (NLP) text classifier.
 - **Tests for real patterns** using the correct statistical test for each type of data.
 - **Generates recommendations**, each one tied to a specific statistical finding.
@@ -20,7 +21,7 @@ Large organisations receive thousands of support tickets a month. Managers canno
 
 ## Key principle
 
-Statistics decide the facts; the language model only phrases the summary. Every finding and every number comes from statistical analysis, never from the model. This keeps the output defensible and avoids "the AI made it up".
+Machine learning categorises; statistics decide the facts. An NLP classifier sorts complaint text into categories, statistical tests establish every finding, and the Executive Brief is built from fixed templates filled only with figures from the analysis. The system never invents findings — which keeps the output defensible and avoids "the AI made it up".
 
 ## Method
 
@@ -40,7 +41,7 @@ A result is only reported as a finding when p < 0.05. Because the dataset is lar
 ## Data
 
 - **Analytics dataset:** a public customer support dataset (~82,000 real records) with category, channel, response timestamps, agent attributes, and CSAT scores.
-- **NLP training dataset:** the CFPB Consumer Complaint Database — real, human-written complaint narratives with verified category labels, used to train and evaluate the classifier (~87% accuracy on held-out data).
+- **NLP training dataset:** the CFPB Consumer Complaint Database — real, human-written complaint narratives with verified category labels, used to train the classifier (~87% accuracy on held-out data). The classifier runs live in the deployed app.
 
 ## Tech stack
 
@@ -57,7 +58,7 @@ Python · pandas · scikit-learn · SciPy · Streamlit · Plotly
 │   ├── statistics_engine.py   # statistical tests
 │   ├── recommendations.py     # findings -> prioritised actions
 │   └── executive_brief.py     # plain-language summary
-├── data/                      # sample dataset
+├── data/                      # sample datasets
 ├── requirements.txt
 └── .streamlit/config.toml     # theme
 ```
