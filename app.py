@@ -272,5 +272,5 @@ with st.expander("Data & Method"):
 
 **Significance vs effect size:** because the dataset is large, most tests reach statistical significance, so effect size (e.g. the Spearman r) is also reported to show how strong each relationship actually is.
 
-**Role of AI:** the language model is used only to phrase the executive summary. Every finding and every number comes from the statistical analysis, not the model.
+**Role of AI / ML:** A machine-learning NLP classifier (TF-IDF + logistic regression) is used to categorise complaint text. The Executive Brief is generated using fixed templates populated only with figures from the statistical analysis, so the system does not invent findings.
     """)
