@@ -20,6 +20,13 @@ from scipy.stats import chi2_contingency, kruskal, spearmanr
 SIGNIFICANCE = 0.05
 
 
+def fmt_p(p):
+    """Format a p-value the way it is reported professionally."""
+    if p < 0.001:
+        return "p < 0.001"
+    return f"p = {p:.3f}"
+
+
 def chi_square_test(df, col_a, col_b):
     """
     Test whether two CATEGORY columns are linked.
@@ -29,9 +36,9 @@ def chi_square_test(df, col_a, col_b):
     chi2, p, dof, expected = chi2_contingency(table)
     significant = p < SIGNIFICANCE
     if significant:
-        sentence = f"'{col_a}' and '{col_b}' are significantly linked (chi-square, p = {p:.4f})."
+        sentence = f"'{col_a}' and '{col_b}' are significantly linked (chi-square, {fmt_p(p)})."
     else:
-        sentence = f"No significant link between '{col_a}' and '{col_b}' (p = {p:.4f})."
+        sentence = f"No significant link between '{col_a}' and '{col_b}' ({fmt_p(p)})."
     return {"test": "chi-square", "p_value": p, "significant": significant, "finding": sentence}
 
 
@@ -47,9 +54,9 @@ def kruskal_test(df, category_col, number_col):
     stat, p = kruskal(*groups)
     significant = p < SIGNIFICANCE
     if significant:
-        sentence = f"'{number_col}' differs significantly across '{category_col}' groups (Kruskal-Wallis, p = {p:.4f})."
+        sentence = f"'{number_col}' differs significantly across '{category_col}' groups (Kruskal-Wallis, {fmt_p(p)})."
     else:
-        sentence = f"No significant difference in '{number_col}' across '{category_col}' (p = {p:.4f})."
+        sentence = f"No significant difference in '{number_col}' across '{category_col}' ({fmt_p(p)})."
     return {"test": "kruskal-wallis", "p_value": p, "significant": significant, "finding": sentence}
 
 
@@ -63,9 +70,9 @@ def spearman_test(df, num_col_a, num_col_b):
     significant = p < SIGNIFICANCE
     direction = "together" if rho > 0 else "in opposite directions"
     if significant:
-        sentence = f"'{num_col_a}' and '{num_col_b}' move {direction} (Spearman r = {rho:.2f}, p = {p:.4f})."
+        sentence = f"'{num_col_a}' and '{num_col_b}' move {direction} (Spearman r = {rho:.2f}, {fmt_p(p)})."
     else:
-        sentence = f"No significant relationship between '{num_col_a}' and '{num_col_b}' (p = {p:.4f})."
+        sentence = f"No significant relationship between '{num_col_a}' and '{num_col_b}' ({fmt_p(p)})."
     return {"test": "spearman", "p_value": p, "significant": significant, "finding": sentence}
 
 

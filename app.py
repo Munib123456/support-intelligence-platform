@@ -219,3 +219,18 @@ if st.button("Generate Executive Brief"):
         st.markdown(f"**Business Impact:** {s['impact']}")
         st.markdown(f"**Recommended Action:** {s['action']}")
         st.divider()
+
+# ---------- Data & Method ----------
+st.divider()
+with st.expander("Data & Method"):
+    st.markdown("""
+**Analytics dataset:** Customer Support Data (~82,000 real support records, public, via Kaggle).
+
+**NLP training dataset:** CFPB Consumer Complaint Database (real, human-written complaint narratives with verified category labels).
+
+**Statistical methods:** chi-square test of independence (category vs category), Kruskal-Wallis test (a numeric measure across categorical groups), and Spearman rank correlation (two ordinal/continuous measures). A result is reported as a finding only when p < 0.05.
+
+**Significance vs effect size:** because the dataset is large, most tests reach statistical significance, so effect size (e.g. the Spearman r) is also reported to show how strong each relationship actually is.
+
+**Role of AI:** the language model is used only to phrase the executive summary. Every finding and every number comes from the statistical analysis, not the model.
+    """)

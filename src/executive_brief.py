@@ -23,8 +23,8 @@ def build_executive_brief(all_tickets, rated_tickets, findings, recs):
             "finding": "Slower response times are linked to lower customer satisfaction.",
             "evidence": spearman["finding"],
             "impact": f"Average satisfaction sits at {avg_csat:.2f} out of 5. "
-                      f"Because the relationship is negative, every reduction in "
-                      f"response time is expected to lift this score.",
+                      f"Lower response times are associated with higher satisfaction, "
+                      f"so reducing first-response delays may improve CSAT.",
             "action": "Reduce first-response times, starting with the slowest queues.",
         })
 
@@ -40,7 +40,8 @@ def build_executive_brief(all_tickets, rated_tickets, findings, recs):
                         f"(satisfaction differs significantly across categories, Kruskal-Wallis p < 0.001).",
             "impact": "Customers raising this issue type leave consistently less satisfied, "
                       "which drags down the overall score.",
-            "action": f"Review how '{worst_cat}' cases are handled and resourced.",
+            "action": f"Review tickets classified as '{worst_cat}' to check whether they hide "
+                      f"recurring issues that need a clearer category or dedicated handling.",
         })
 
     # --- Section 3: the biggest volume category ---
