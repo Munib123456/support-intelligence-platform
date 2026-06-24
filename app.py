@@ -19,6 +19,16 @@ from load_data import clean_tickets
 from statistics_engine import run_all_tests
 from recommendations import generate_recommendations
 from executive_brief import build_executive_brief
+from classifier import get_trained_model
+
+
+# Train the NLP classifier once and cache it for the whole session.
+@st.cache_resource(show_spinner="Training the NLP classifier (first load only)...")
+def load_model():
+    for p in ["data/complaints_sample.csv", "data/complaints.csv"]:
+        if os.path.exists(p):
+            return get_trained_model(p)
+    return None
 
 # ---------- Page setup ----------
 st.set_page_config(page_title="Support Intelligence Platform", page_icon="📊", layout="wide")
@@ -117,6 +127,19 @@ h2, h3 { font-weight: 600 !important; letter-spacing: -0.01em !important; color:
 st.title("Customer Support Intelligence Platform")
 st.caption("Upload support data. Get findings, evidence and prioritised actions — backed by statistics, not guesswork.")
 
+# ---------- Live NLP demo ----------
+with st.expander("🤖 Try the NLP classifier — type a complaint", expanded=False):
+    st.write("The platform uses a machine-learning text classifier to categorise complaints. "
+             "Type any complaint below and it will predict the category live.")
+    example = st.text_input("Complaint text:", placeholder="e.g. There is a wrong charge on my credit card")
+    if example.strip():
+        model = load_model()
+        if model is not None:
+            prediction = model.predict([example])[0]
+            st.markdown(f"**Predicted category:** {prediction}")
+        else:
+            st.warning("Classifier training data not available in this deployment.")
+
 # ---------- Get the data ----------
 st.sidebar.header("Data source")
 choice = st.sidebar.radio(
@@ -138,6 +161,23 @@ else:
 if df_raw is None:
     st.info("Choose a data source in the sidebar to begin.")
     st.stop()
+
+# ---------- NLP auto-categorisation (if needed) ----------
+# If the uploaded data has complaint text but no category column,
+# use the NLP classifier to predict a category for each row.
+TEXT_COLS = ["Customer Remarks", "narrative", "Complaint Text", "text", "description"]
+CATEGORY_COLS = ["category", "Category", "Ticket Type"]
+
+has_category = any(c in df_raw.columns for c in CATEGORY_COLS)
+text_col = next((c for c in TEXT_COLS if c in df_raw.columns), None)
+
+if not has_category and text_col is not None:
+    model = load_model()
+    if model is not None:
+        texts = df_raw[text_col].fillna("").astype(str)
+        df_raw["category"] = model.predict(texts)
+        st.success(f"No category column found — the NLP classifier predicted categories "
+                   f"from the '{text_col}' text column.")
 
 # ---------- Run the pipeline ----------
 try:

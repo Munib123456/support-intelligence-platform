@@ -60,6 +60,30 @@ def train_classifier(path="data/complaints.csv", save_to="models/classifier.pkl"
     return model
 
 
+def get_trained_model(path="data/complaints.csv"):
+    """
+    Train the classifier in-memory and return it (no disk save).
+    The app caches the result so this only runs once per session.
+    Uses a sample of the data to keep first-load fast.
+    """
+    df = pd.read_csv(path)
+    df = df[["narrative", "product_5"]].dropna()
+
+    # Sample to keep training quick on a web server (full data not needed for a demo).
+    if len(df) > 20000:
+        df = df.sample(20000, random_state=42)
+
+    X = df["narrative"]
+    y = df["product_5"]
+
+    model = Pipeline([
+        ("tfidf", TfidfVectorizer(max_features=5000, stop_words="english")),
+        ("clf", LogisticRegression(max_iter=1000, class_weight="balanced")),
+    ])
+    model.fit(X, y)
+    return model
+
+
 def predict_category(text, model_path="models/classifier.pkl"):
     """Load the saved model and predict the category of one piece of text."""
     model = joblib.load(model_path)
