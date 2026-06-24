@@ -3,4 +3,3 @@ __pycache__/
 .DS_Store
 data/complaints.csv
 models/
-.streamlit/
